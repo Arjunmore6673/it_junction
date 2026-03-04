@@ -14,6 +14,7 @@ import Dashboard from './pages/admin/Dashboard';
 import NewJob from './pages/admin/NewJob';
 import Customers from './pages/admin/Customers';
 import Staff from './pages/admin/Staff';
+import Settings from './pages/admin/Settings';
 
 function App() {
   return (
@@ -39,7 +40,7 @@ function App() {
               <Route path="new-job" element={<NewJob />} />
               <Route path="customers" element={<Customers />} />
               <Route path="staff" element={<Staff />} />
-              <Route path="settings" element={<div className="p-4 bg-white rounded shadow-sm text-gray-500">Settings Page Placeholder (Admin Only)</div>} />
+              <Route path="settings" element={<Settings />} />
             </Route>
           </Route>
 

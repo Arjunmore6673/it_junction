@@ -128,4 +128,9 @@ export const FirestoreService = {
         if (!snap.exists()) return null;
         return { uid: snap.id, ...(snap.data() as Omit<StaffUser, 'uid'>) };
     },
+
+    async deleteStaffProfile(uid: string): Promise<void> {
+        const { deleteDoc } = await import('firebase/firestore');
+        await deleteDoc(doc(db, 'users', uid));
+    },
 };

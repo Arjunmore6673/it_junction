@@ -7,6 +7,7 @@ import { Search, Loader2, Save, Laptop, ToggleLeft, ToggleRight } from 'lucide-r
 import { useAuth } from '../../contexts/AuthContext';
 import PhotoCapture from '../../components/admin/PhotoCapture';
 import type { CapturedPhoto } from '../../components/admin/PhotoCapture';
+import { generateWhatsAppLink } from '../../utils/whatsapp';
 
 type NewJobFormInputs = {
     mobile: string;
@@ -77,7 +78,7 @@ export default function NewJob() {
             }
 
             // 2. Create job with all new fields
-            await FirestoreService.createRepairJob({
+            const newJob = await FirestoreService.createRepairJob({
                 customerId: customer.id,
                 deviceType: data.deviceType,
                 deviceBrand: data.deviceBrand,
@@ -100,6 +101,11 @@ export default function NewJob() {
                     : { provided: false },
                 assignedTo: user?.id,
             });
+
+            // 3. Generate WhatsApp link and open it in a new tab
+            const origin = window.location.origin;
+            const waLink = generateWhatsAppLink(customer, newJob, origin);
+            window.open(waLink, '_blank');
 
             navigate('/admin/customers');
         } catch {

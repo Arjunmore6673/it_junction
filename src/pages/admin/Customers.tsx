@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FirestoreService } from '../../firebase/firestoreService';
 import type { RepairJob, Customer } from '../../types';
+import { useSearchParams } from 'react-router-dom';
 import {
     Search, MonitorPlay, Phone, Edit, X, Save, Loader2,
     Calendar, Wrench, Package, CheckCircle, Clock, Truck, AlertCircle,
@@ -76,6 +77,20 @@ export default function Customers() {
     };
 
     useEffect(() => { loadData(); }, []);
+
+    // Auto-open drawer when navigated from Dashboard via ?job=<id>
+    const [searchParams, setSearchParams] = useSearchParams();
+    useEffect(() => {
+        const jobId = searchParams.get('job');
+        if (jobId && jobs.length > 0) {
+            const target = jobs.find(j => j.id === jobId);
+            if (target) {
+                openDrawer(target);
+                setSearchParams({}, { replace: true }); // clean up URL
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [jobs, searchParams]);
 
     useEffect(() => {
         if (!searchTerm) { setFilteredJobs(jobs); return; }

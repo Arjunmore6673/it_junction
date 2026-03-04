@@ -5,7 +5,7 @@ import { FirestoreService } from '../../firebase/firestoreService';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import type { StaffUser } from '../../types';
-import { UserPlus, Users, Shield, User, X, Loader2, Eye, EyeOff, CheckCircle } from 'lucide-react';
+import { UserPlus, Users, Shield, User, X, Loader2, Eye, EyeOff, CheckCircle, Trash2 } from 'lucide-react';
 
 export default function Staff() {
     const { user } = useAuth();
@@ -24,6 +24,8 @@ export default function Staff() {
     const [isCreating, setIsCreating] = useState(false);
     const [createError, setCreateError] = useState('');
     const [createSuccess, setCreateSuccess] = useState('');
+    const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null); // uid to delete
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Admin guard
     useEffect(() => {
@@ -81,6 +83,19 @@ export default function Staff() {
         }
     };
 
+    const handleDelete = async (uid: string) => {
+        setIsDeleting(true);
+        try {
+            await FirestoreService.deleteStaffProfile(uid);
+            await loadStaff();
+        } catch {
+            alert('Failed to delete staff account.');
+        } finally {
+            setIsDeleting(false);
+            setDeleteConfirm(null);
+        }
+    };
+
     return (
         <div className="max-w-4xl mx-auto">
             <div className="mb-6 flex items-center justify-between">
@@ -118,6 +133,7 @@ export default function Staff() {
                                     <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
                                     <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
                                     <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Added</th>
+                                    <th className="px-5 py-3" />
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
@@ -141,6 +157,14 @@ export default function Staff() {
                                         </td>
                                         <td className="px-5 py-4 text-sm text-gray-400">
                                             {new Date(s.createdAt).toLocaleDateString('en-IN')}
+                                        </td>
+                                        <td className="px-5 py-4 text-right">
+                                            <button type="button"
+                                                onClick={() => setDeleteConfirm(s.uid)}
+                                                className="text-gray-400 hover:text-red-600 transition-colors p-1 rounded"
+                                                title="Delete staff account">
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -231,6 +255,32 @@ export default function Staff() {
                                     </div>
                                 </form>
                             )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirm Dialog */}
+            {deleteConfirm && (
+                <div className="fixed inset-0 z-50 overflow-y-auto">
+                    <div className="flex items-center justify-center min-h-screen p-4">
+                        <div className="fixed inset-0 bg-black/50" onClick={() => setDeleteConfirm(null)} />
+                        <div className="relative bg-white rounded-xl shadow-xl w-full max-w-sm p-6 z-10">
+                            <h3 className="text-lg font-bold text-gray-900 mb-2">Delete Staff Account?</h3>
+                            <p className="text-sm text-gray-500 mb-6">
+                                This will remove <span className="font-semibold text-gray-800">{staffList.find(s => s.uid === deleteConfirm)?.name}</span> from the admin portal. This action cannot be undone.
+                            </p>
+                            <div className="flex gap-3">
+                                <button type="button" onClick={() => setDeleteConfirm(null)}
+                                    className="flex-1 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                    Cancel
+                                </button>
+                                <button type="button" onClick={() => handleDelete(deleteConfirm)} disabled={isDeleting}
+                                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white rounded-lg text-sm font-medium">
+                                    {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
