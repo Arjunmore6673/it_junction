@@ -1,4 +1,4 @@
-import { MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin, Phone, Mail, Code2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Footer() {
@@ -8,9 +8,10 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
                         <h3 className="text-xl font-bold mb-4">IT Junction</h3>
-                        <p className="text-gray-400 mb-4">
+                        <p className="text-gray-400 mb-2">
                             Your trusted partner for computer repair, laptop services, and technical support.
                         </p>
+                        <p className="text-xs text-gray-500">Established Since 2014</p>
                     </div>
 
                     <div>
@@ -34,18 +35,29 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center">
                                 <Phone className="h-5 w-5 text-brand-500 mr-2 flex-shrink-0" />
-                                <span className="text-gray-400">+91 00000 00000</span> {/* Placeholder phone */}
+                                <a href="tel:+918007199909" className="text-gray-400 hover:text-white transition-colors">+91 80071 99909</a>
                             </li>
                             <li className="flex items-center">
                                 <Mail className="h-5 w-5 text-brand-500 mr-2 flex-shrink-0" />
-                                <span className="text-gray-400">support@itjunction.com</span> {/* Placeholder email */}
+                                <span className="text-gray-400">support@itjunction.com</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
+                <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
                     <p>&copy; {new Date().getFullYear()} IT Junction. All rights reserved.</p>
+                    <p className="flex items-center gap-1.5">
+                        <Code2 className="h-3.5 w-3.5 text-brand-500" />
+                        Developed by&nbsp;
+                        <a href="mailto:arjunmore6673@gmail.com" className="text-brand-400 hover:text-brand-300 transition-colors font-medium">
+                            Arjun More
+                        </a>
+                        &nbsp;·&nbsp;
+                        <a href="tel:+917066064461" className="text-gray-400 hover:text-white transition-colors">
+                            +91 70660 64461
+                        </a>
+                    </p>
                 </div>
             </div>
         </footer>

@@ -12,8 +12,8 @@ interface ShopSettings {
 
 const DEFAULT_SETTINGS: ShopSettings = {
     shopName: 'IT Junction',
-    phone: '',
-    address: '',
+    phone: '8007199909',
+    address: 'Sai Chowk, Shastri Nagar, Pimpri Colony, Pune 411017',
     whatsappCountryCode: '91',
 };
 
