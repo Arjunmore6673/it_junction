@@ -84,12 +84,15 @@ export const FirestoreService = {
         if (!customer) return null;
         const q = query(
             collection(db, 'repairJobs'),
-            where('customerId', '==', customer.id),
-            orderBy('createdAt', 'desc')
+            where('customerId', '==', customer.id)
         );
         const snap = await getDocs(q);
         if (snap.empty) return null;
-        return jobFromDoc(snap.docs[0].id, snap.docs[0].data() as Record<string, unknown>);
+
+        const jobs = snap.docs.map(d => jobFromDoc(d.id, d.data() as Record<string, unknown>));
+        jobs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+        return jobs[0];
     },
 
     async createRepairJob(data: Omit<RepairJob, 'id' | 'createdAt' | 'updatedAt'>): Promise<RepairJob> {

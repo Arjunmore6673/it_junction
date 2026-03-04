@@ -30,6 +30,7 @@ export default function TrackRepair() {
                 setError('No recent repair jobs found for this number.');
             }
         } catch (err) {
+            console.error('Error fetching job status:', err);
             setError('An error occurred while tracking. Please try again later.');
         } finally {
             setIsLoading(false);
