@@ -182,27 +182,71 @@ export default function Customers() {
         <div className="flex gap-6">
             {/* ── Job list ──────────────────────────────────────────────────── */}
             <div className={`flex-1 min-w-0 ${selectedJob ? 'hidden lg:block' : ''}`}>
-                <div className="mb-6 border-b border-gray-200 pb-4">
+                <div className="mb-4 border-b border-gray-200 pb-4">
                     <h1 className="text-2xl font-bold text-gray-900">Jobs &amp; Customers</h1>
-                    <p className="mt-1 text-sm text-gray-500">Click any row to view and update job details.</p>
+                    <p className="mt-1 text-sm text-gray-500">Tap any job to view and update details.</p>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-4">
-                    <div className="relative max-w-xl">
+                <div className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 mb-4">
+                    <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                         <input type="text"
                             className="block w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-                            placeholder="Search by Job ID, Mobile, Brand, Problem..."
+                            placeholder="Search by Job ID, customer, brand…"
                             value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
                     </div>
                 </div>
-                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+
+                {/* ── Mobile card list (hidden on md+) ── */}
+                <div className="md:hidden space-y-2">
+                    {filteredJobs.map(job => {
+                        const customer = customersMap[job.customerId];
+                        return (
+                            <button key={job.id} type="button"
+                                onClick={() => openDrawer(job)}
+                                className={`w-full text-left bg-white rounded-xl border shadow-sm px-4 py-3 transition-colors ${
+                                    selectedJob?.id === job.id ? 'border-brand-400 bg-brand-50' : 'border-gray-200 active:bg-gray-50'
+                                }`}>
+                                <div className="flex items-start justify-between gap-2">
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <span className="text-sm font-bold text-brand-600">{job.id}</span>
+                                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${STATUS_COLORS[job.status]}`}>
+                                                {STATUS_ICONS[job.status]} {job.status}
+                                            </span>
+                                        </div>
+                                        <div className="text-sm font-medium text-gray-900 mt-0.5">
+                                            {customer?.name || 'Unknown'}
+                                            {customer && <span className="text-gray-400 font-normal ml-1 text-xs">· {customer.mobile}</span>}
+                                        </div>
+                                        <div className="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
+                                            <MonitorPlay className="h-3 w-3 flex-shrink-0" />
+                                            {job.deviceBrand} {job.deviceModel} — <span className="truncate">{job.reportedProblem}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex-shrink-0 text-xs text-gray-400 text-right">
+                                        <Clock className="h-3 w-3 inline mr-0.5" />
+                                        {new Date(job.createdAt).toLocaleDateString('en-IN')}
+                                    </div>
+                                </div>
+                            </button>
+                        );
+                    })}
+                    {filteredJobs.length === 0 && (
+                        <div className="text-center py-14 text-gray-400 text-sm">
+                            No jobs found{searchTerm ? ` for "${searchTerm}"` : ''}.
+                        </div>
+                    )}
+                </div>
+
+                {/* ── Desktop table (hidden on mobile) ── */}
+                <div className="hidden md:block bg-white rounded-lg border border-gray-200 overflow-x-auto shadow-sm">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
                                 <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Job</th>
-                                <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Customer</th>
+                                <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Customer</th>
                                 <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Device</th>
-                                <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Status</th>
+                                <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                                 <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
@@ -218,27 +262,18 @@ export default function Customers() {
                                             {new Date(job.createdAt).toLocaleDateString('en-IN')}
                                         </div>
                                     </td>
-                                    <td className="px-5 py-4 hidden sm:table-cell">
-                                        <div className="flex flex-col">
-                                            <div className="text-sm font-medium text-gray-900">
-                                                {customersMap[job.customerId]?.name || 'Unknown'}
-                                            </div>
-                                            <div className="flex items-center text-xs text-gray-500 mt-0.5">
-                                                <Phone className="h-3 w-3 mr-1 flex-shrink-0" />
-                                                {customersMap[job.customerId]?.mobile || job.customerId}
-                                            </div>
+                                    <td className="px-5 py-4">
+                                        <div className="text-sm font-medium text-gray-900">{customersMap[job.customerId]?.name || 'Unknown'}</div>
+                                        <div className="flex items-center text-xs text-gray-500 mt-0.5">
+                                            <Phone className="h-3 w-3 mr-1 flex-shrink-0" />
+                                            {customersMap[job.customerId]?.mobile || job.customerId}
                                         </div>
                                     </td>
                                     <td className="px-5 py-4">
-                                        <div className="flex items-center gap-1.5">
-                                            <MonitorPlay className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                                            <div>
-                                                <div className="text-sm font-medium text-gray-900">{job.deviceBrand} {job.deviceModel}</div>
-                                                <div className="text-xs text-gray-500 truncate max-w-[200px]">{job.reportedProblem}</div>
-                                            </div>
-                                        </div>
+                                        <div className="text-sm font-medium text-gray-900">{job.deviceBrand} {job.deviceModel}</div>
+                                        <div className="text-xs text-gray-500 truncate max-w-[200px]">{job.reportedProblem}</div>
                                     </td>
-                                    <td className="px-5 py-4 hidden md:table-cell">
+                                    <td className="px-5 py-4">
                                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[job.status]}`}>
                                             {STATUS_ICONS[job.status]} {job.status}
                                         </span>
@@ -263,8 +298,10 @@ export default function Customers() {
 
             {/* ── Detail panel ──────────────────────────────────────────────── */}
             {selectedJob && editForm && (
-                <div className="w-full lg:w-[480px] flex-shrink-0">
-                    <div className="bg-white rounded-xl border border-gray-200 shadow-sm sticky top-0 max-h-screen overflow-y-auto">
+                <div className="fixed inset-0 z-40 lg:relative lg:inset-auto lg:w-[480px] lg:flex-shrink-0">
+                    {/* Mobile overlay backdrop */}
+                    <div className="absolute inset-0 bg-black/40 lg:hidden" onClick={closeDrawer} />
+                    <div className="absolute inset-x-0 bottom-0 max-h-[92vh] overflow-y-auto bg-white rounded-t-2xl lg:rounded-xl lg:relative lg:inset-auto lg:max-h-screen lg:border lg:border-gray-200 lg:shadow-sm lg:sticky lg:top-0">
                         {/* Header */}
                         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-gray-50 rounded-t-xl">
                             <div>

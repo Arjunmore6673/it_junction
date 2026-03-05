@@ -9,7 +9,9 @@ export default function Home() {
             <section className="relative bg-brand-600 text-white overflow-hidden">
                 {/* Subtle diagonal texture overlay */}
                 <div className="absolute inset-0 opacity-10"
-                    style={{ backgroundImage: 'repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)', backgroundSize: '12px 12px' }} />
+                    style={{
+                        backgroundColor: "red"
+                    }} />
 
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-20">
                     <div className="grid md:grid-cols-[auto_1fr_auto] items-center gap-8">

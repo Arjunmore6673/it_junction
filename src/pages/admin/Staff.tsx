@@ -126,50 +126,80 @@ export default function Staff() {
                             </div>
                         </div>
                     ) : (
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</th>
-                                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
-                                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
-                                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Added</th>
-                                    <th className="px-5 py-3" />
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100">
+                        <>
+                            {/* Mobile card list */}
+                            <ul className="md:hidden divide-y divide-gray-100">
                                 {staffList.map(s => (
-                                    <tr key={s.uid} className="hover:bg-gray-50">
-                                        <td className="px-5 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-9 w-9 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-sm flex-shrink-0">
-                                                    {s.name.charAt(0).toUpperCase()}
-                                                </div>
-                                                <span className="text-sm font-medium text-gray-900">{s.name}</span>
+                                    <li key={s.uid} className="flex items-center gap-3 px-4 py-3">
+                                        <div className="h-10 w-10 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                            {s.name.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <span className="text-sm font-semibold text-gray-900 truncate">{s.name}</span>
+                                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${s.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                    {s.role === 'admin' ? <Shield className="h-3 w-3" /> : <User className="h-3 w-3" />}
+                                                    {s.role === 'admin' ? 'Admin' : 'Staff'}
+                                                </span>
                                             </div>
-                                        </td>
-                                        <td className="px-5 py-4 text-sm text-gray-600">{s.email}</td>
-                                        <td className="px-5 py-4">
-                                            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${s.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
-                                                }`}>
-                                                {s.role === 'admin' ? <Shield className="h-3 w-3" /> : <User className="h-3 w-3" />}
-                                                {s.role === 'admin' ? 'Admin' : 'Staff'}
-                                            </span>
-                                        </td>
-                                        <td className="px-5 py-4 text-sm text-gray-400">
-                                            {new Date(s.createdAt).toLocaleDateString('en-IN')}
-                                        </td>
-                                        <td className="px-5 py-4 text-right">
-                                            <button type="button"
-                                                onClick={() => setDeleteConfirm(s.uid)}
-                                                className="text-gray-400 hover:text-red-600 transition-colors p-1 rounded"
-                                                title="Delete staff account">
-                                                <Trash2 className="h-4 w-4" />
-                                            </button>
-                                        </td>
-                                    </tr>
+                                            <p className="text-xs text-gray-500 truncate">{s.email}</p>
+                                            <p className="text-xs text-gray-400">{new Date(s.createdAt).toLocaleDateString('en-IN')}</p>
+                                        </div>
+                                        <button type="button"
+                                            onClick={() => setDeleteConfirm(s.uid)}
+                                            className="text-gray-400 hover:text-red-600 transition-colors p-2 rounded flex-shrink-0"
+                                            title="Delete staff account">
+                                            <Trash2 className="h-4 w-4" />
+                                        </button>
+                                    </li>
                                 ))}
-                            </tbody>
-                        </table>
+                            </ul>
+
+                            {/* Desktop table */}
+                            <table className="hidden md:table min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
+                                        <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Added</th>
+                                        <th className="px-5 py-3" />
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    {staffList.map(s => (
+                                        <tr key={s.uid} className="hover:bg-gray-50">
+                                            <td className="px-5 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="h-9 w-9 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                                        {s.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <span className="text-sm font-medium text-gray-900">{s.name}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-5 py-4 text-sm text-gray-600">{s.email}</td>
+                                            <td className="px-5 py-4">
+                                                <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${s.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                    {s.role === 'admin' ? <Shield className="h-3 w-3" /> : <User className="h-3 w-3" />}
+                                                    {s.role === 'admin' ? 'Admin' : 'Staff'}
+                                                </span>
+                                            </td>
+                                            <td className="px-5 py-4 text-sm text-gray-400">
+                                                {new Date(s.createdAt).toLocaleDateString('en-IN')}
+                                            </td>
+                                            <td className="px-5 py-4 text-right">
+                                                <button type="button"
+                                                    onClick={() => setDeleteConfirm(s.uid)}
+                                                    className="text-gray-400 hover:text-red-600 transition-colors p-1 rounded"
+                                                    title="Delete staff account">
+                                                    <Trash2 className="h-4 w-4" />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </>
                     )}
                 </div>
             )}
