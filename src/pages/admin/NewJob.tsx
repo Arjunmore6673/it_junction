@@ -102,10 +102,10 @@ export default function NewJob() {
                 assignedTo: user?.id,
             });
 
-            // 3. Generate WhatsApp link and open it in a new tab
+            // 3. Generate WhatsApp link and open it
             const origin = window.location.origin;
             const waLink = generateWhatsAppLink(customer, newJob, origin);
-            window.open(waLink, '_blank');
+            window.location.href = waLink;
 
             navigate('/admin/customers');
         } catch {

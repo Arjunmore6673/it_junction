@@ -27,7 +27,8 @@ export default function Contact() {
 
         const text = `Hello IT Junction,\n\nMy name is *${form.name}*.\nMy contact number: ${form.phone}\n\n*Message:*\n${form.message}`;
         const url = `https://wa.me/${SHOP_WHATSAPP}?text=${encodeURIComponent(text)}`;
-        window.open(url, '_blank');
+        // Use location.href — more reliable than window.open for WhatsApp deep links on mobile
+        window.location.href = url;
         setSubmitted(true);
     };
 
